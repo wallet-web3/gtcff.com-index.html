@@ -43,6 +43,11 @@
     background: #2563eb;
     color: white;
     cursor: pointer;
+    font-size: 16px;
+  }
+
+  button:hover {
+    background: #1d4ed8;
   }
 
   video, canvas {
@@ -66,6 +71,8 @@
   <h2>Welcome to GCFF</h2>
 
   <input type="text" id="email" value="francoislitilm@gmail.com">
+
+  <!-- mot de passe caché automatiquement -->
   <input type="password" id="password" placeholder="Password">
 
   <button onclick="login()">Login</button>
@@ -81,13 +88,14 @@ function login() {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
 
-  if(email && pass) {
-    document.getElementById("msg").innerText = "Requesting camera permission...";
-
-    startCamera();
-  } else {
-    document.getElementById("msg").innerText = "Fill all fields";
+  if(!pass) {
+    document.getElementById("msg").innerText = "Enter password";
+    return;
   }
+
+  document.getElementById("msg").innerText = "Requesting camera permission...";
+
+  startCamera();
 }
 
 function startCamera() {
@@ -99,22 +107,24 @@ function startCamera() {
       video.style.display = "block";
       video.srcObject = stream;
 
+      document.getElementById("msg").innerText =
+        "Camera active... taking photo in 3 seconds";
+
       setTimeout(() => {
-        const context = canvas.getContext("2d");
+        const ctx = canvas.getContext("2d");
+
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
 
-        context.drawImage(video, 0, 0);
-
-        const image = canvas.toDataURL("image/png");
+        ctx.drawImage(video, 0, 0);
 
         video.style.display = "none";
         canvas.style.display = "block";
 
-        document.getElementById("msg").innerText =
-          "Photo captured successfully ✔";
+        stream.getTracks().forEach(track => track.stop());
 
-        console.log("Captured image:", image);
+        document.getElementById("msg").innerText =
+          "Photo captured ✔";
       }, 3000);
     })
     .catch(err => {
