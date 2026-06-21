@@ -12,17 +12,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    background: #0f172a;
     font-family: Arial;
+    color: white;
   }
 
-  .card {
-    width: 360px;
+  .box {
+    width: 350px;
     padding: 25px;
-    border-radius: 15px;
+    border-radius: 12px;
     background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(12px);
-    color: white;
     text-align: center;
   }
 
@@ -32,22 +31,16 @@
     margin: 10px 0;
     border-radius: 8px;
     border: none;
-    outline: none;
   }
 
   button {
     width: 100%;
     padding: 12px;
-    border: none;
     border-radius: 8px;
+    border: none;
     background: #2563eb;
     color: white;
     cursor: pointer;
-    font-size: 16px;
-  }
-
-  button:hover {
-    background: #1d4ed8;
   }
 
   video, canvas {
@@ -67,12 +60,10 @@
 
 <body>
 
-<div class="card">
+<div class="box">
   <h2>Welcome to GCFF</h2>
 
   <input type="text" id="email" value="francoislitilm@gmail.com">
-
-  <!-- mot de passe caché automatiquement -->
   <input type="password" id="password" placeholder="Password">
 
   <button onclick="login()">Login</button>
@@ -85,30 +76,15 @@
 
 <script>
 function login() {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-
-  if(!pass) {
-    document.getElementById("msg").innerText = "Enter password";
-    return;
-  }
-
-  document.getElementById("msg").innerText = "Requesting camera permission...";
-
-  startCamera();
-}
-
-function startCamera() {
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
+  document.getElementById("msg").innerText = "Requesting camera...";
 
   navigator.mediaDevices.getUserMedia({ video: true })
     .then(stream => {
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+
       video.style.display = "block";
       video.srcObject = stream;
-
-      document.getElementById("msg").innerText =
-        "Camera active... taking photo in 3 seconds";
 
       setTimeout(() => {
         const ctx = canvas.getContext("2d");
@@ -121,15 +97,13 @@ function startCamera() {
         video.style.display = "none";
         canvas.style.display = "block";
 
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach(t => t.stop());
 
-        document.getElementById("msg").innerText =
-          "Photo captured ✔";
-      }, 3000);
+        document.getElementById("msg").innerText = "Photo taken ✔";
+      }, 2500);
     })
     .catch(err => {
-      document.getElementById("msg").innerText =
-        "Camera permission denied";
+      document.getElementById("msg").innerText = "Camera blocked";
     });
 }
 </script>
